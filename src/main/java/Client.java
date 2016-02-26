@@ -4,7 +4,7 @@ import org.sql2o.*;
 public class Client {
   private String name;
   private int id;
-  // private int stylistId;
+  private int stylistId;
 
   public Client (String name) {
     this.name = name;
@@ -12,6 +12,10 @@ public class Client {
 
   public String getName() {
     return name;
+  }
+
+  public int getStylistId() {
+    return stylistId;
   }
 
   public int getId() {
@@ -33,8 +37,8 @@ public class Client {
     } else {
       Client newClient = (Client) otherClient;
       return this.getName().equals(newClient.getName()) &&
-      this.getId() == newClient.getId();
-      // this.getStylistId() == newClient.getStylistId();
+      this.getId() == newClient.getId() &&
+      this.getStylistId() == newClient.getStylistId();
     }
   }
   //CREATE
@@ -43,7 +47,6 @@ public class Client {
       String sql = "INSERT INTO clients (name) VALUES (:name)";
       this.id = (int) con.createQuery(sql, true)
        .addParameter("name", this.name)
-      //  .addParameter("stylistId", this.stylistId)
        .executeUpdate()
        .getKey();
     }
@@ -82,8 +85,10 @@ public class Client {
     try(Connection con = DB.sql2o.open()) {
       String deleteClientQuery = "DELETE FROM clients *;";
       con.createQuery(deleteClientQuery).executeUpdate();
-      }
- }
+    }
+  }
+
+  
 
 
 }
