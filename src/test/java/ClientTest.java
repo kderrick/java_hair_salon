@@ -1,5 +1,6 @@
 import org.junit.*;
 import static org.junit.Assert.*;
+import org.sql2o.*;
 
 public class ClientTest {
 
@@ -8,37 +9,62 @@ public class ClientTest {
 
   @Test
   public void all_emptyAtFirst() {
+      assertEquals(Client.all().size(), 0);
+  }
+
+  @Test
+  public void save_addsAllInstancesOfClientToList() {
+    Client testClient = new Client("Tina");
+    Client testClient1 = new Client("Jean");
+    testClient.save();
+    testClient1.save();
+    assertEquals(2, Client.all().size());
+  }
+
+  @Test
+  public void updateName_changesClientName() {
+    Client testClient = new Client("Tina");
+    testClient.save();
+    testClient.updateName("Jean");
+    Client savedClient = Client.find(testClient.getId());
+    assertEquals("Jean", savedClient.getName());
+  }
+//
+  @Test
+  public void delete_removesClientFromDatabase() {
+    Client testClient = new Client("Tina");
+    testClient.save();
+    testClient.delete();
     assertEquals(0, Client.all().size());
   }
-
+//
   @Test
-  public void equals_returnsTrueIfDescriptionsAreTheSame() {
-    Client firstClient = new Client("John Smith", 1);
-    Client secondClient = new Client("John Smith", 1);
-    assertTrue(firstClient.equals(secondClient));
+  public void find_findsInstanceOfClientById() {
+    Client testClient = new Client("Tina");
+    testClient.save();
+    assertEquals(Client.find(testClient.getId()), testClient);
   }
-
+//
   @Test
-  public void save_returnsTrueIfDescriptionsAretheSame() {
-    Client myClient = new Client("John Smith", 1);
-    myClient.save();
-    assertTrue(Client.all().get(0).equals(myClient));
+  public void assignStylist_assignsStylistToTheClient() {
+    Client testClient = new Client("Tina");
+    testClient.save();
+    Stylist testStylist = new Stylist("Billy");
+    testStylist.save();
+    testClient.assignStylist(testStylist.getId());
+    Client savedClient = Client.find(testClient.getId());
+    assertEquals(savedClient.getStylistId(), testStylist.getId());
   }
-
+//
   @Test
-  public void save_assignsIdToObject() {
-    Client myClient = new Client("John Smith", 1);
-    myClient.save();
-    Client savedClient = Client.all().get(0);
-    assertEquals(myClient.getId(), savedClient.getId());
+  public void clearStylist_removesStylistFromClient() {
+    Stylist testStylist = new Stylist("Billy");
+    testStylist.save();
+    Client testClient = new Client("Tina");
+    testClient.save();
+    testClient.assignStylist(testStylist.getId());
+    testClient.clearStylist();
+    Client savedClient = Client.find(testClient.getId());
+    assertEquals(savedClient.getStylistId(), 0);
   }
-
-  @Test
-  public void find_findsClientsInDatabase_true() {
-    Client myClient = new Client("John Smith", 1);
-    myClient.save();
-    Client savedClient = Client.find(myClient.getId());
-    assertTrue(myClient.equals(savedClient));
-  }
-
 }
