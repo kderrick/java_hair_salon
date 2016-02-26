@@ -23,4 +23,35 @@ public class StylistTest {
     assertEquals(2, Stylist.all().size());
   }
 
+  @Test
+  public void delete_removesStylistFromDatabase() {
+    Stylist testStylist = new Stylist("Billy");
+    testStylist.save();
+    testStylist.delete();
+    assertEquals(0, Stylist.all().size());
+  }
+
+  @Test
+  public void equalsReturnsTrueIfStylistNamesAreTheSame () {
+    Stylist testStylist1 = new Stylist("Billy");
+    Stylist testStylist2 = new Stylist("Billy");
+    assertTrue(testStylist1.equals(testStylist2));
+  }
+
+//   @Test
+//   public void find_findsInstanceOfClientById() {
+//     Client testClient = new Client("Billy");
+//     testClient.save();
+//     assertEquals(Client.find(testClient.getId()), testClient);
+// }
+
+  // @Test
+  // public void update_changesStylistName() {
+  //   Stylist testStylist = new Stylist("Billy");
+  //   testStylist.save();
+  //   testStylist.update("John");
+  //   Stylist savedStylist = Stylist.find(testStylist.getId());
+  //   assertEquals("John", savedStylist.getType());
+  // }
+
 }
