@@ -38,20 +38,20 @@ public class StylistTest {
     assertTrue(testStylist1.equals(testStylist2));
   }
 
-//   @Test
-//   public void find_findsInstanceOfClientById() {
-//     Client testClient = new Client("Billy");
-//     testClient.save();
-//     assertEquals(Client.find(testClient.getId()), testClient);
-// }
+  @Test
+  public void find_findsInstanceOfStylistById() {
+    Stylist testStylist = new Stylist("Billy");
+    testStylist.save();
+    assertEquals(Stylist.find(testStylist.getId()), testStylist);
+}
 
-  // @Test
-  // public void update_changesStylistName() {
-  //   Stylist testStylist = new Stylist("Billy");
-  //   testStylist.save();
-  //   testStylist.update("John");
-  //   Stylist savedStylist = Stylist.find(testStylist.getId());
-  //   assertEquals("John", savedStylist.getType());
-  // }
+  @Test
+  public void update_changesStylistName() {
+    Stylist testStylist = new Stylist("Billy");
+    testStylist.save();
+    testStylist.updateStylistName("John");
+    Stylist savedStylist = Stylist.find(testStylist.getId());
+    assertEquals("John", savedStylist.getStylistName());
+  }
 
 }

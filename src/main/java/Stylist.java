@@ -26,9 +26,18 @@ public class Stylist {
       Stylist newStylist = (Stylist) otherStylist;
       return this.getStylistName().equals(newStylist.getStylistName()) &&
         this.getId() == newStylist.getId();
+      }
   }
-}
 
+  public static Stylist find(int id) {
+    String sql = "SELECT id, stylistName FROM stylists WHERE id = :id";
+    try(Connection con = DB.sql2o.open()) {
+      return con.createQuery(sql)
+        .addParameter("id", id)
+        .executeAndFetchFirst(Stylist.class);
+    }
+  }
+  //READ
   public static List<Stylist> all() {
     String sql = "SELECT id, stylistName FROM stylists";
     try(Connection con = DB.sql2o.open()) {
@@ -56,5 +65,15 @@ public class Stylist {
   }
 
   //UPDATE
+
+  public void updateStylistName(String newStylistName) {
+    String sql = "UPDATE stylists SET stylistName = :stylistName WHERE id = :id";
+    try(Connection con = DB.sql2o.open()) {
+      con.createQuery(sql)
+        .addParameter("stylistName", newStylistName)
+        .addParameter("id", id)
+        .executeUpdate();
+    }
+  }
 
 }
