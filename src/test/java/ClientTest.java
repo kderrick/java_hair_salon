@@ -68,4 +68,14 @@ public class ClientTest {
     Client.deleteAll();
     assertEquals(Client.all().size(), 0);
   }
+
+  @Test
+  public void assignStylist_addsStylistsIdToClientsStylistId() {
+    Client testClient = new Client("Tony");
+    testClient.save();
+    Stylist testStylist = new Stylist("Susan");
+    testStylist.save();
+    testClient.assignStylist(testStylist.getId());
+    assertEquals(testClient.getStylistId(), testStylist.getId());
+  }
 }

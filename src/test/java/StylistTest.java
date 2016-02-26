@@ -54,4 +54,17 @@ public class StylistTest {
     assertEquals("John", savedStylist.getStylistName());
   }
 
+  @Test
+  public void getclients_getAllClientsWithinAStylist() {
+    Stylist testStylist = new Stylist("Billy");
+    testStylist.save();
+    Client testclient = new Client("Martha");
+    Client testclient1 = new Client("Sally");
+    testclient.save();
+    testclient1.save();
+    testclient.assignStylist(testStylist.getId());
+    testclient1.assignStylist(testStylist.getId());
+    assertEquals(2,testStylist.getClients().size());
+  }
+
 }
