@@ -50,4 +50,12 @@ public class ClientTest {
     Client savedClient = Client.find(testClient.getId());
     assertEquals("Charles", savedClient.getName());
   }
+
+  @Test
+  public void deleteRemovesClientFromDatabase() {
+    Client testClient = new Client("Billy");
+    testClient.save();
+    testClient.deleteClient();
+    assertEquals(Client.all().size(), 0);
+  }
 }
