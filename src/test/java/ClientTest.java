@@ -58,4 +58,14 @@ public class ClientTest {
     testClient.deleteClient();
     assertEquals(Client.all().size(), 0);
   }
+
+  @Test
+  public void deleteAllRemovesAllClients_forClearingProductionDatabase() {
+    Client testClient = new Client("Billy");
+    testClient.save();
+    Client testClient1 = new Client("John");
+    testClient1.save();
+    Client.deleteAll();
+    assertEquals(Client.all().size(), 0);
+  }
 }

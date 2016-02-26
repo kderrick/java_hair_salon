@@ -78,5 +78,12 @@ public class Client {
       }
   }
 
+  public static void deleteAll(){
+    try(Connection con = DB.sql2o.open()) {
+      String deleteClientQuery = "DELETE FROM clients *;";
+      con.createQuery(deleteClientQuery).executeUpdate();
+      }
+ }
+
 
 }
