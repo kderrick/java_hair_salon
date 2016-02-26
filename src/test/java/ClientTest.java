@@ -18,4 +18,11 @@ public class ClientTest {
     Client testClient2 = new Client("Billy");
     assertTrue(testClient1.equals(testClient2));
   }
+
+  @Test
+  public void saveAddsAllInstancesOfClientToList () {
+    Client testClient1 = new Client("Billy");
+    testClient1.save();
+    assertTrue(Client.all().get(0).equals(testClient1));
+  }
 }

@@ -11,11 +11,11 @@ public class Client {
   }
 
   public String getName() {
-    return this.name;
+    return name;
   }
 
   public int getId() {
-    return this.id;
+    return id;
   }
 
 
@@ -32,11 +32,22 @@ public class Client {
       return false;
     } else {
       Client newClient = (Client) otherClient;
-      return this.getName().equals(newClient.getName());
-      // this.getId() == newPatient.getId() &&
-      // this.getBirthDate().equals(newPatient.getBirthDate()) &&
-      // this.getDoctorId() == newPatient.getDoctorId();
+      return this.getName().equals(newClient.getName()) &&
+      this.getId() == newClient.getId();
+      // this.getStylistId() == newClient.getStylistId();
+    }
   }
-}
+
+  public void save() {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "INSERT INTO clients (name) VALUES (:name)";
+      this.id = (int) con.createQuery(sql, true)
+       .addParameter("name", this.name)
+      //  .addParameter("doctorId", this.doctorId)
+       .executeUpdate()
+       .getKey();
+    }
+  }
+
 
 }
