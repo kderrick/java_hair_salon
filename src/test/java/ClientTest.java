@@ -42,12 +42,12 @@ public class ClientTest {
 
   }
 
- //  @Test
- //   public void updateName_changesClientName() {
- //     Client testClient = new Client("Billy");
- //     testClient.save();
- //     testClient.updateName("Charles");
- //     Client savedClient = Client.find(testClient.getId());
- //     assertEquals("Charles", savedClient.getName());
- // }
+  @Test
+  public void updateName_changesClientName() {
+    Client testClient = new Client("Billy");
+    testClient.save();
+    testClient.updateName("Charles");
+    Client savedClient = Client.find(testClient.getId());
+    assertEquals("Charles", savedClient.getName());
+  }
 }
