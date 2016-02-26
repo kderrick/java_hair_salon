@@ -8,6 +8,12 @@
 
 This is a web application written in Java for a hair salon that will allow a user to add stylists employed by the salon as well as the clients associated with each stylist.
 
+## In PSQL
+
+* CREATE DATABASE hair_salon;
+* CREATE TABLE clients (id serial PRIMARY KEY, name varchar, stylistid int)
+* CREATE TABLE stylists (id serial PRIMARY KEY, stylistname varchar)
+
 ## How To Use
 
 * Clone this repository from github.
