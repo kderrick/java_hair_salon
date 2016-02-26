@@ -3,86 +3,65 @@ import org.sql2o.*;
 
 
 public class Stylist {
-  private String stylistName;
   private int id;
+  private String name;
 
-  public Stylist (String stylistName) {
-    this.stylistName = stylistName;
+  public Stylist(String name) {
+  this.name = name;
   }
 
-  public String getStylistName() {
-    return stylistName;
+  public String getName () {
+    return name;
   }
 
   public int getId() {
     return id;
   }
 
-  @Override
-  public boolean equals(Object otherStylist){
-    if (!(otherStylist instanceof Stylist)) {
-      return false;
-    } else {
-      Stylist newStylist = (Stylist) otherStylist;
-      return this.getStylistName().equals(newStylist.getStylistName()) &&
-        this.getId() == newStylist.getId();
-      }
-  }
-
-  public static Stylist find(int id) {
-    String sql = "SELECT id, stylistName FROM stylists WHERE id = :id";
-    try(Connection con = DB.sql2o.open()) {
-      return con.createQuery(sql)
-        .addParameter("id", id)
-        .executeAndFetchFirst(Stylist.class);
-    }
-  }
-  //READ
   public static List<Stylist> all() {
-    String sql = "SELECT id, stylistName FROM stylists";
+    String sql = "SELECT id, name FROM stylists ORDER BY NAME ASC";
     try(Connection con = DB.sql2o.open()) {
       return con.createQuery(sql).executeAndFetch(Stylist.class);
     }
   }
-  //CREATE
+
+  @Override
+  public boolean equals(Object otherStylist) {
+    if (!(otherStylist instanceof Stylist)) {
+      return false;
+    } else {
+      Stylist newStylist = (Stylist) otherStylist;
+      return this.getName().equals(newStylist.getName()) &&
+      this.getId() == newStylist.getId();
+    }
+  }
+
   public void save() {
-    String sql = "INSERT INTO stylists(stylistName) VALUES (:stylistName)";
     try(Connection con = DB.sql2o.open()) {
-    this.id = (int) con.createQuery(sql,true)
-      .addParameter("stylistName", stylistName)
-      .executeUpdate()
-      .getKey();
-    }
-  }
-  ///DELETE
-  public void delete() {
-    String sql = "DELETE FROM stylists WHERE id = :id";
-    try(Connection con = DB.sql2o.open()) {
-      con.createQuery(sql)
-        .addParameter("id", id)
-        .executeUpdate();
+      String sql = "INSERT INTO stylists (name) VALUES (:name)";
+      this.id = (int) con.createQuery(sql, true)
+       .addParameter("name", this.name)
+       .executeUpdate()
+       .getKey();
     }
   }
 
-  //UPDATE
-
-  public void updateStylistName(String newStylistName) {
-    String sql = "UPDATE stylists SET stylistName = :stylistName WHERE id = :id";
+  public static Stylist find(int id) {
     try(Connection con = DB.sql2o.open()) {
-      con.createQuery(sql)
-        .addParameter("stylistName", newStylistName)
-        .addParameter("id", id)
-        .executeUpdate();
+    String sql = "SELECT * FROM Stylists WHERE id=:id";
+    Stylist stylist = con.createQuery(sql)
+      .addParameter("id", id)
+      .executeAndFetchFirst(Stylist.class);
+    return stylist;
     }
   }
 
   public List<Client> getClients() {
-    String sql = "SELECT * FROM clients WHERE id = :id";
     try(Connection con = DB.sql2o.open()) {
+      String sql = "SELECT * FROM clients WHERE stylistId = :id";
       return con.createQuery(sql)
-        .addParameter("id", id)
+        .addParameter("id", this.id)
         .executeAndFetch(Client.class);
     }
   }
-
 }

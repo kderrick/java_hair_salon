@@ -1,6 +1,5 @@
 import org.junit.*;
 import static org.junit.Assert.*;
-import java.time.LocalDateTime;
 
 public class ClientTest {
 
@@ -8,74 +7,38 @@ public class ClientTest {
   public DatabaseRule database = new DatabaseRule();
 
   @Test
-  public void all_emptyATFirst() {
+  public void all_emptyAtFirst() {
     assertEquals(0, Client.all().size());
   }
 
   @Test
-  public void equalsReturnsTrueIfNamesAreTheSame () {
-    Client testClient1 = new Client("Billy");
-    Client testClient2 = new Client("Billy");
-    assertTrue(testClient1.equals(testClient2));
+  public void equals_returnsTrueIfDescriptionsAreTheSame() {
+    Client firstClient = new Client("John Smith", 1);
+    Client secondClient = new Client("John Smith", 1);
+    assertTrue(firstClient.equals(secondClient));
   }
 
   @Test
-  public void saveAddsAllInstancesOfClientToList () {
-    Client testClient1 = new Client("Billy");
-    testClient1.save();
-    assertTrue(Client.all().get(0).equals(testClient1));
+  public void save_returnsTrueIfDescriptionsAretheSame() {
+    Client myClient = new Client("John Smith", 1);
+    myClient.save();
+    assertTrue(Client.all().get(0).equals(myClient));
   }
 
   @Test
   public void save_assignsIdToObject() {
-    Client myClient = new Client("John");
+    Client myClient = new Client("John Smith", 1);
     myClient.save();
     Client savedClient = Client.all().get(0);
     assertEquals(myClient.getId(), savedClient.getId());
   }
 
   @Test
-  public void findLocatesASpecificInstanceOfClientBasedOffId() {
-    Client newClient = new Client("John");
-    newClient.save();
-    assertEquals(Client.find(newClient.getId()), newClient);
-
+  public void find_findsClientsInDatabase_true() {
+    Client myClient = new Client("John Smith", 1);
+    myClient.save();
+    Client savedClient = Client.find(myClient.getId());
+    assertTrue(myClient.equals(savedClient));
   }
 
-  @Test
-  public void updateName_changesClientName() {
-    Client testClient = new Client("Billy");
-    testClient.save();
-    testClient.updateName("Charles");
-    Client savedClient = Client.find(testClient.getId());
-    assertEquals("Charles", savedClient.getName());
-  }
-
-  @Test
-  public void deleteRemovesClientFromDatabase() {
-    Client testClient = new Client("Billy");
-    testClient.save();
-    testClient.deleteClient();
-    assertEquals(Client.all().size(), 0);
-  }
-
-  @Test
-  public void deleteAllRemovesAllClients_forClearingProductionDatabase() {
-    Client testClient = new Client("Billy");
-    testClient.save();
-    Client testClient1 = new Client("John");
-    testClient1.save();
-    Client.deleteAll();
-    assertEquals(Client.all().size(), 0);
-  }
-
-  @Test
-  public void assignStylist_addsStylistsIdToClientsStylistId() {
-    Client testClient = new Client("Tony");
-    testClient.save();
-    Stylist testStylist = new Stylist("Susan");
-    testStylist.save();
-    testClient.assignStylist(testStylist.getId());
-    assertEquals(testClient.getStylistId(), testStylist.getId());
-  }
 }

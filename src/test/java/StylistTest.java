@@ -1,13 +1,11 @@
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.Arrays;
-import org.sql2o.*;
 
 public class StylistTest {
 
   @Rule
   public DatabaseRule database = new DatabaseRule();
-
 
   @Test
   public void all_emptyAtFirst() {
@@ -15,56 +13,40 @@ public class StylistTest {
   }
 
   @Test
-  public void save_addsAllInstancesOfStylistToList() {
-    Stylist testStylist = new Stylist("Billy");
-    Stylist testStylist1 = new Stylist("John");
-    testStylist.save();
-    testStylist1.save();
-    assertEquals(2, Stylist.all().size());
+  public void equals_returnsTrueIfNamesAretheSame() {
+    Stylist firstStylist = new Stylist("Jane");
+    Stylist secondStylist = new Stylist("Jane");
+    assertTrue(firstStylist.equals(secondStylist));
   }
 
   @Test
-  public void delete_removesStylistFromDatabase() {
-    Stylist testStylist = new Stylist("Billy");
-    testStylist.save();
-    testStylist.delete();
-    assertEquals(0, Stylist.all().size());
+  public void save_savesIntoDatabase_true() {
+    Stylist zStylist = new Stylist("Zoe");
+    zStylist.save();
+    Stylist myStylist = new Stylist("Jane");
+    myStylist.save();
+    Stylist aStylist = new Stylist("Anne");
+    aStylist.save();
+    assertTrue(Stylist.all().get(1).equals(myStylist));
   }
 
   @Test
-  public void equalsReturnsTrueIfStylistNamesAreTheSame () {
-    Stylist testStylist1 = new Stylist("Billy");
-    Stylist testStylist2 = new Stylist("Billy");
-    assertTrue(testStylist1.equals(testStylist2));
+  public void find_findStylistInDatabase_true() {
+    Stylist myStylist = new Stylist("Jane");
+    myStylist.save();
+    Stylist savedStylist = Stylist.find(myStylist.getId());
+    assertTrue(myStylist.equals(savedStylist));
   }
 
   @Test
-  public void find_findsInstanceOfStylistById() {
-    Stylist testStylist = new Stylist("Billy");
-    testStylist.save();
-    assertEquals(Stylist.find(testStylist.getId()), testStylist);
-}
-
-  @Test
-  public void update_changesStylistName() {
-    Stylist testStylist = new Stylist("Billy");
-    testStylist.save();
-    testStylist.updateStylistName("John");
-    Stylist savedStylist = Stylist.find(testStylist.getId());
-    assertEquals("John", savedStylist.getStylistName());
+  public void getClients_retrievesAllClientsFromDatabase_clientsList() {
+    Stylist myStylist = new Stylist("Jane");
+    myStylist.save();
+    Client firstClient = new Client("John Smith", 1);
+    firstClient.save();
+    Client secondClient = new Client("Kelly Smith", 1);
+    secondClient.save();
+    Client[] clients = new Client[] { firstClient, secondClient };
+    assertTrue(myStylist.getClients().containsAll(Arrays.asList(clients)));
   }
-
-  @Test
-  public void getclients_getAllClientsWithinAStylist() {
-    Stylist testStylist = new Stylist("Billy");
-    testStylist.save();
-    Client testclient = new Client("Martha");
-    Client testclient1 = new Client("Sally");
-    testclient.save();
-    testclient1.save();
-    testclient.assignStylist(testStylist.getId());
-    testclient1.assignStylist(testStylist.getId());
-    assertEquals(2,testStylist.getClients().size());
-  }
-
 }
