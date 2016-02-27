@@ -8,19 +8,21 @@
 
 This is a web application written in Java for a hair salon that will allow a user to add stylists employed by the salon as well as the clients associated with each stylist.
 
-## In PSQL
+## Setup/Installation Requirements
 
+* Clone this repository.
+* Make sure you have Gradle and Java installed.
+* Start Psql and Postgres
+* in PSQL:
 * CREATE DATABASE hair_salon;
-* CREATE TABLE clients (id serial PRIMARY KEY, name varchar, stylistid int)
-* CREATE TABLE stylists (id serial PRIMARY KEY, stylistname varchar)
+* Connect to database by using \c command: \c hair_salon;
+* CREATE TABLE stylists (id serial PRIMARY KEY, name varchar);
+* CREATE TABLE clients (id serial PRIMARY KEY, stylistid int, name varchar);
+* In the top level of the cloned directory, run the following command in your terminal:
 
-## How To Use
+`gradle run`
 
-* Clone this repository from github.
-* Ensure you have Java and the Java Runtime Environment configured correctly on your computer.
-* Ensure you have gradle installed on your computer.
-* In your terminal, type gradle run.
-* Navigate to http://localhost:4567.
+* Open your web browser of choice to localhost:4567
 
 ## Please Make This Better
 
