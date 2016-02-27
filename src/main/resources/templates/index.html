@@ -1,0 +1,19 @@
+index.vtl
+
+<h1>Stylist List:</h1>
+
+#foreach($stylist in $stylists)
+<h4><a href="/$stylist.getId()">$stylist.getName()</a>
+
+  <form action="/delete/stylist/$stylist.getId()" method="post">
+  <button type="submit" id="$stylist.getId()" name="deleteStylist" class="btn btn-danger">
+    Delete Stylist</button></h4>
+  </form>
+#end
+
+
+<form action="/" method="post">
+  <label for="">Add a Stylist</label>
+  <input type="text" name="stylistName" id="stylistName" required>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
