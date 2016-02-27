@@ -1,25 +1,33 @@
-import org.sql2o.*;
 import java.util.List;
+import org.sql2o.*;
 
 public class Client {
   private int id;
+  private int stylistId;
   private String name;
-  private int stylist_id;
-
-  public Client (String name) {
-    this.name = name;
-  }
 
   public int getId() {
     return id;
   }
 
-  public int getStylistId() {
-    return stylist_id;
-  }
-
   public String getName() {
     return name;
+  }
+
+  public int getStylistId() {
+    return stylistId;
+  }
+
+  public Client(String name, int stylistId) {
+    this.name = name;
+    this.stylistId = stylistId;
+  }
+
+  public static List<Client> all() {
+    String sql = "SELECT id, name, stylistId FROM clients";
+    try(Connection con = DB.sql2o.open()) {
+      return con.createQuery(sql).executeAndFetch(Client.class);
+    }
   }
 
   @Override
@@ -28,83 +36,41 @@ public class Client {
       return false;
     } else {
       Client newClient = (Client) otherClient;
+      System.out.println(this.getStylistId());
+      System.out.println(newClient.getStylistId());
       return this.getName().equals(newClient.getName()) &&
-        this.getId() == newClient.getId();
+             this.getId() == newClient.getId() &&
+             this.getStylistId() == newClient.getStylistId();
     }
   }
 
-  //CREATE
   public void save() {
-    try (Connection con = DB.sql2o.open()) {
-    String sql = "INSERT INTO clients(name) VALUES (:name)";
-    this.id = (int) con.createQuery(sql, true)
-      .addParameter("name", name)
-      .executeUpdate()
-      .getKey();
-    }
-  }
-
-  //READ
-  public static List<Client> all() {
-    String sql = "SELECT * FROM clients";
-    try (Connection con = DB.sql2o.open()) {
-      return con.createQuery(sql).executeAndFetch(Client.class);
-    }
-  }
-
-  //UPDATE
-  public void updateName(String newName) {
-    String sql = "UPDATE clients SET name = :name WHERE id = :id";
     try(Connection con = DB.sql2o.open()) {
-      con.createQuery(sql)
-        .addParameter("name", newName)
-        .addParameter("id", id)
-        .executeUpdate();
-    }
-  }
-  //DELETE
-  public void delete() {
-    try(Connection con = DB.sql2o.open()) {
-      String sql = "DELETE FROM clients WHERE id = :id";
-        con.createQuery(sql)
-          .addParameter("id", id)
-          .executeUpdate();
+      String sql = "INSERT INTO clients(name, stylistId) VALUES (:name, :stylistId)";
+      this.id = (int) con.createQuery(sql, true)
+        .addParameter("name", name)
+        .addParameter("stylistId", stylistId)
+        .executeUpdate()
+        .getKey();
     }
   }
 
   public static Client find(int id) {
-    String sql = "SELECT * FROM clients WHERE id = :id";
     try(Connection con = DB.sql2o.open()) {
-      return con.createQuery(sql)
+      String sql = "SELECT * FROM clients where id=:id";
+      Client client = con.createQuery(sql)
         .addParameter("id", id)
         .executeAndFetchFirst(Client.class);
+      return client;
     }
   }
 
-  public void assignStylist(int stylist_id) {
-    String sql = "UPDATE clients SET stylist_id = :stylist_id WHERE id = :id";
-    try(Connection con = DB.sql2o.open()) {
-      con.createQuery(sql)
-        .addParameter("stylist_id", stylist_id)
-        .addParameter("id", id)
-        .executeUpdate();
-    }
-  }
-
-  public void clearStylist() {
-    String sql = "UPDATE clients SET stylist_id = NULL WHERE id = :id";
+  public static void delete(int id) {
+    String sql = "DELETE FROM clients WHERE id=:id";
     try(Connection con = DB.sql2o.open()) {
       con.createQuery(sql)
         .addParameter("id", id)
         .executeUpdate();
     }
   }
-
-  public static void deleteAll(){
-  try(Connection con = DB.sql2o.open()) {
-    String deleteClientQuery = "DELETE FROM clients *;";
-    con.createQuery(deleteClientQuery).executeUpdate();
-    }
-  }
-
 }

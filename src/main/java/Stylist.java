@@ -1,20 +1,27 @@
-import org.sql2o.*;
 import java.util.List;
+import org.sql2o.*;
 
 public class Stylist {
-  private int stylist_id;
+  private int id;
   private String name;
 
-  public Cuisine (String name) {
-    this.name = name;
-  }
-
   public int getId() {
-    return stylist_id;
+    return id;
   }
 
   public String getName() {
     return name;
+  }
+
+  public Stylist(String name) {
+    this.name = name;
+  }
+
+  public static List<Stylist> all() {
+    String sql = "SELECT id, name FROM Stylists";
+    try(Connection con = DB.sql2o.open()) {
+      return con.createQuery(sql).executeAndFetch(Stylist.class);
+    }
   }
 
   @Override
@@ -23,89 +30,45 @@ public class Stylist {
       return false;
     } else {
       Stylist newStylist = (Stylist) otherStylist;
-      return this.getName().equals(newStylist.getName()) &&
-        this.getId() == newStylist.getId();
+      return this.getName().equals(newStylist.getName());
     }
   }
-//
-//   //CREATE
+
   public void save() {
-    try (Connection con = DB.sql2o.open()) {
-    String sql = "INSERT INTO stylists(name) VALUES (:name)";
-    this.stylist_id = (int) con.createQuery(sql, true)
-      .addParameter("name", name)
-      .executeUpdate()
-      .getKey();
-    }
-  }
-//
-//   //READ
-  public static List<Stylist> all() {
-    String sql = "SELECT stylist_id, type FROM stylist";
-    try (Connection con = DB.sql2o.open()) {
-      return con.createQuery(sql).executeAndFetch(Stylist.class);
-    }
-  }
-//
-//   //UPDATE
-  public void update(String newName) {
-    String sql = "UPDATE stylists SET name = :name WHERE stylist_id = :stylist_id";
     try(Connection con = DB.sql2o.open()) {
-      con.createQuery(sql)
-        .addParameter("name", newName)
-        .addParameter("stylist_id", stylist_id)
-        .executeUpdate();
+      String sql = "INSERT INTO Stylists(name) VALUES (:name)";
+      this.id = (int) con.createQuery(sql, true)
+        .addParameter("name", this.name)
+        .executeUpdate()
+        .getKey();
     }
   }
-// //
-//   //DELETE
-  public void delete() {
-    this.clearAllAssigned();
+
+  public static Stylist find(int id) {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "DELETE FROM stylists WHERE stylist_id = :stylist_id";
-        con.createQuery(sql)
-          .addParameter("stylist_id", stylist_id)
-          .executeUpdate();
-    }
-  }
-//
-  public static Stylist find(int stylist_id) {
-    String sql = "SELECT stylist_id, type FROM stylists WHERE stylist_id = :stylist_id";
-    try(Connection con = DB.sql2o.open()) {
-      return con.createQuery(sql)
-        .addParameter("stylist_id", stylist_id)
+      String sql = "SELECT * FROM Stylists where id=:id";
+      Stylist Stylist = con.createQuery(sql)
+        .addParameter("id", id)
         .executeAndFetchFirst(Stylist.class);
+      return Stylist;
     }
   }
-//
+
   public List<Client> getClients() {
-    String sql = "SELECT * FROM clients WHERE stylist_id = :stylist_id";
     try(Connection con = DB.sql2o.open()) {
+      String sql = "SELECT * FROM clients where stylistId=:id";
       return con.createQuery(sql)
-        .addParameter("stylist_id", stylist_id)
+        .addParameter("id", id)
         .executeAndFetch(Client.class);
     }
   }
-//
-  public static List<Client> getUnassignedClients() {
-    String sql = "SELECT * FROM clients WHERE stylist_id IS NULL";
-    try(Connection con = DB.sql2o.open()) {
-      return con.createQuery(sql)
-        .executeAndFetch(Client.class);
-    }
-  }
-//
-  public static void deleteAll(){
-  try(Connection con = DB.sql2o.open()) {
-    String deleteStylistQuery = "DELETE FROM stylists *;";
-    con.createQuery(deleteStylistQuery).executeUpdate();
-    }
-  }
-//
-  public void clearAllAssigned() {
-    List<Client> clientsToClear = this.getClients();
-    for (Client client : clientsToClear) {
-      client.clearStylist();
-    }
+
+  public static void deleteStylist(int id) {
+      String sql = "DELETE FROM Stylists WHERE id=:id";
+      try(Connection con = DB.sql2o.open()) {
+        con.createQuery(sql)
+        .addParameter("id", id)
+        .executeUpdate();
+      }
   }
 }
